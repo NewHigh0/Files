@@ -222,9 +222,44 @@ void analyzeFile(const std::string& sourceFile, const std::string& destFile) {
     std::cout << "Statistics have been written to " << destFile << std::endl;
 }
 
+void caesarCipher(const std::string& sourceFile, const std::string& destFile, int shift) {
+    std::ifstream inFile(sourceFile);
+    if (!inFile.is_open()) {
+        std::cout << "Error: Cannot open source file " << sourceFile << std::endl;
+        return;
+    }
+
+    std::ofstream outFile(destFile);
+    if (!outFile.is_open()) {
+        std::cout << "Error: Cannot open destination file " << destFile << std::endl;
+        inFile.close();
+        return;
+    }
+
+    char ch;
+    while (inFile.get(ch)) {
+        if (std::isalpha(ch)) {
+            char base = std::isupper(ch) ? 'A' : 'a';
+
+            ch = base + (ch - base + shift) % 26;
+
+            if (ch < base) {
+                ch += 26;
+            }
+        }
+        outFile.put(ch);
+    }
+
+    std::cout << "File has been encrypted!" << std::endl;
+
+    inFile.close();
+    outFile.close();
+}
+
 int main() {
     std::string sourceFileName = "source.txt";
     std::string destFileName = "destination.txt";
+    int shift = 3;
 
     // copyFileContent(sourceFileName, destFileName);
 
@@ -234,7 +269,9 @@ int main() {
 
     // compareFiles(sourceFileName, destFileName);
 
-    analyzeFile(sourceFileName, destFileName);
+    // analyzeFile(sourceFileName, destFileName);
+
+    caesarCipher(sourceFileName, destFileName, shift);
 
     return 0;
 }
