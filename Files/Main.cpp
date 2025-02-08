@@ -110,6 +110,63 @@ void processFile(const std::string& sourceFile, const std::string& destFile) {
     outFile.close();
 }
 
+void compareFiles(const std::string& file1Name, const std::string& file2Name) {
+    std::ifstream file1(file1Name);
+    if (!file1.is_open()) {
+        std::cout << "Error: Cannot open first file " << file1Name << std::endl;
+        return;
+    }
+
+    std::ifstream file2(file2Name);
+    if (!file2.is_open()) {
+        std::cout << "Error: Cannot open second file " << file2Name << std::endl;
+        file1.close();
+        return;
+    }
+
+    std::string line1, line2;
+    int lineNumber = 1;
+    bool filesMatch = true;
+    bool file1Ended = false;
+    bool file2Ended = false;
+
+    while (true) {
+        bool hasLine1 = static_cast<bool>(std::getline(file1, line1));
+        bool hasLine2 = static_cast<bool>(std::getline(file2, line2));
+
+        if (!hasLine1 && !hasLine2) {
+            break;
+        }
+
+        if (!hasLine1 || !hasLine2 || line1 != line2) {
+            filesMatch = false;
+            std::cout << "Mismatch at line " << lineNumber << ":" << std::endl;
+
+            if (hasLine1) {
+                std::cout << "File 1: " << line1 << std::endl;
+            }
+            else {
+                std::cout << "File 1: <end of file>" << std::endl;
+            }
+
+            if (hasLine2) {
+                std::cout << "File 2: " << line2 << std::endl;
+            }
+            else {
+                std::cout << "File 2: <end of file>" << std::endl;
+            }
+        }
+        lineNumber++;
+    }
+
+    if (filesMatch) {
+        std::cout << "Files are identical!" << std::endl;
+    }
+
+    file1.close();
+    file2.close();
+}
+
 int main() {
     std::string sourceFileName = "source.txt";
     std::string destFileName = "destination.txt";
@@ -118,7 +175,9 @@ int main() {
 
     // copyFileContentReverse(sourceFileName, destFileName);
 
-    processFile(sourceFileName, destFileName);
+    // processFile(sourceFileName, destFileName);
+
+    compareFiles(sourceFileName, destFileName);
 
     return 0;
 }
