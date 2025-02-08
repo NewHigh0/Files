@@ -167,6 +167,61 @@ void compareFiles(const std::string& file1Name, const std::string& file2Name) {
     file2.close();
 }
 
+void analyzeFile(const std::string& sourceFile, const std::string& destFile) {
+    std::ifstream inFile(sourceFile);
+    if (!inFile.is_open()) {
+        std::cout << "Error: Cannot open source file " << sourceFile << std::endl;
+        return;
+    }
+
+    int totalChars = 0;
+    int lines = 0;
+    int vowels = 0;
+    int consonants = 0;
+    int digits = 0;
+    std::string line;
+
+    while (std::getline(inFile, line)) {
+        lines++;
+
+        for (char c : line) {
+            totalChars++;
+
+            char lower = std::tolower(c);
+
+            if (lower == 'a' || lower == 'e' || lower == 'i' ||
+                lower == 'o' || lower == 'u' || lower == 'y') {
+                vowels++;
+            }
+            else if (std::isalpha(c)) {
+                consonants++;
+            }
+            else if (std::isdigit(c)) {
+                digits++;
+            }
+        }
+        totalChars++;
+    }
+
+    inFile.close();
+
+    std::ofstream outFile(destFile);
+    if (!outFile.is_open()) {
+        std::cout << "Error: Cannot open destination file " << destFile << std::endl;
+        return;
+    }
+
+    outFile << "Total characters: " << totalChars << "\n";
+    outFile << "Total lines: " << lines << "\n";
+    outFile << "Vowels: " << vowels << "\n";
+    outFile << "Consonants: " << consonants << "\n";
+    outFile << "Digits: " << digits << "\n";
+
+    outFile.close();
+
+    std::cout << "Statistics have been written to " << destFile << std::endl;
+}
+
 int main() {
     std::string sourceFileName = "source.txt";
     std::string destFileName = "destination.txt";
@@ -177,7 +232,9 @@ int main() {
 
     // processFile(sourceFileName, destFileName);
 
-    compareFiles(sourceFileName, destFileName);
+    // compareFiles(sourceFileName, destFileName);
+
+    analyzeFile(sourceFileName, destFileName);
 
     return 0;
 }
